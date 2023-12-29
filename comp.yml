@@ -1,0 +1,1253 @@
+networks:
+  armar_default:
+    external: true
+    name: "armar_default"
+  docker_default:
+    external: true
+    name: "docker_default"
+  redmine_default:
+    external: true
+    name: "redmine_default"
+  root_default:
+    external: true
+    name: "root_default"
+
+services:
+
+  acondi:
+    command:
+      - "/bin/sh"
+      - "-c"
+      - "npm start"
+    container_name: "acondi"
+    entrypoint:
+      - "docker-entrypoint.sh"
+    environment:
+      - "DB_HOST=db.system4us.com"
+      - "DB_PORT=5698"
+      - "DB_USER=acondi"
+      - "DB_PASSWORD=acondi2023"
+      - "DB_DATABASE=acondi"
+      - "NODE_ENV=production"
+      - "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+      - "NODE_VERSION=20.10.0"
+      - "YARN_VERSION=1.22.19"
+    hostname: "57f9619a7136"
+    image: "armar-server"
+    ipc: "private"
+    labels:
+      com.docker.compose.config-hash: "08a5506b8a96a4722155080c3b51c9099ccdbce030afdc45aa36709fd9376882"
+      com.docker.compose.container-number: "1"
+      com.docker.compose.depends_on: ""
+      com.docker.compose.image: "sha256:9ca82a4e19190b47851a20bdcf6a22a70f127362d5ff66d2b969e8abbc4c8020"
+      com.docker.compose.oneoff: "False"
+      com.docker.compose.project: "armar"
+      com.docker.compose.project.config_files: "D:\\codigo\\armar\\compose.yaml"
+      com.docker.compose.project.working_dir: "D:\\codigo\\armar"
+      com.docker.compose.service: "server"
+      com.docker.compose.version: "2.23.0"
+    logging:
+      driver: "json-file"
+      options: {}
+    networks:
+      - "armar_default"
+    ports:
+      - "3000:3000/tcp"
+    user: "node"
+    working_dir: "/opt"
+
+  docker-mattermost-1:
+
+    command:
+      - "mattermost"
+
+    container_name: "docker-mattermost-1"
+
+    entrypoint:
+      - "/entrypoint.sh"
+
+    environment:
+      - "MM_SQLSETTINGS_DATASOURCE=postgres://postgres:123@10.10.0.3:5432/mattermost?sslmode=disable&connect_timeout=10"
+      - "MM_BLEVESETTINGS_INDEXDIR=/mattermost/bleve-indexes"
+      - "MM_SERVICESETTINGS_SITEURL=https://chat.system4us.com"
+      - "TZ=UTC"
+      - "MM_SQLSETTINGS_DRIVERNAME=postgres"
+      - "PATH=/mattermost/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+    hostname: "22424d24a5bc"
+
+    image: "mattermost/mattermost-enterprise-edition:7.8"
+
+    ipc: "private"
+
+    labels:
+      com.docker.compose.config-hash: "4a764da750fda1b55d43d80a5c11897e590c38962426cbc67354a89de6c80ff3"
+      com.docker.compose.container-number: "1"
+      com.docker.compose.depends_on: ""
+      com.docker.compose.image: "sha256:d85b9714d39a5f3141c52128cf50b54c935e4489a2bf9e0928333f700f0653b8"
+      com.docker.compose.oneoff: "False"
+      com.docker.compose.project: "docker"
+      com.docker.compose.project.config_files: "/root/docker/docker-compose.yml,/root/docker/docker-compose.without-nginx.yml"
+      com.docker.compose.project.working_dir: "/root/docker"
+      com.docker.compose.service: "mattermost"
+      com.docker.compose.version: "2.23.0"
+      desktop.docker.io/wsl-distro: "Debian"
+      org.opencontainers.image.ref.name: "ubuntu"
+      org.opencontainers.image.version: "22.04"
+
+    logging:
+      driver: "json-file"
+      options: {}
+
+    networks:
+      - "docker_default"
+
+    ports:
+      - "8065:8065/tcp"
+      - "8443:8443/tcp"
+      - "8443:8443/udp"
+
+    restart: "unless-stopped"
+
+    security_opt:
+      - "no-new-privileges:true"
+
+    user: "mattermost"
+
+    volumes:
+      - "/root/docker/volumes/app/mattermost/bleve-indexes:/mattermost/bleve-indexes"
+      - "/root/docker/volumes/app/mattermost/client/plugins:/mattermost/client/plugins"
+      - "/root/docker/volumes/app/mattermost/config:/mattermost/config"
+      - "/root/docker/volumes/app/mattermost/data:/mattermost/data"
+      - "/root/docker/volumes/app/mattermost/logs:/mattermost/logs"
+      - "/root/docker/volumes/app/mattermost/plugins:/mattermost/plugins"
+
+    working_dir: "/mattermost"
+
+  guacamole:
+
+    command:
+      - "/opt/guacamole/bin/start.sh"
+
+    container_name: "guacamole"
+
+    environment:
+      - "POSTGRESQL_DATABASE=guacamole_db"
+      - "POSTGRESQL_USER=postgres"
+      - "POSTGRESQL_PASSWORD=123"
+      - "POSTGRESQL_HOSTNAME=10.10.0.3"
+      - "POSTGRESQL_PORT=5432"
+      - "PATH=/usr/local/tomcat/bin:/opt/java/openjdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+      - "JAVA_HOME=/opt/java/openjdk"
+      - "LANG=en_US.UTF-8"
+      - "LANGUAGE=en_US:en"
+      - "LC_ALL=en_US.UTF-8"
+      - "JAVA_VERSION=jdk8u392-b08"
+      - "CATALINA_HOME=/usr/local/tomcat"
+      - "TOMCAT_NATIVE_LIBDIR=/usr/local/tomcat/native-jni-lib"
+      - "LD_LIBRARY_PATH=/usr/local/tomcat/native-jni-lib"
+      - "GPG_KEYS=05AB33110949707C93A279E3D3EFE6B686867BA6 07E48665A34DCAFAE522E5E6266191C37C037D42 47309207D818FFD8DCD3F83F1931D684307A10A5\
+        \ 541FBE7D8F78B25E055DDEE13C370389288584E7 5C3C5F3E314C866292F359A8F3AD5C94A67F707E 765908099ACF92702C7D949BFA0C35EA8AA299F1\
+        \ 79F7026C690BAA50B92CD8B66A3AD3F4F22C4FED 9BA44C2621385CB966EBA586F72C284D731FABEE A27677289986DB50844682F8ACB77FC2E86E29AC\
+        \ A9C5DF4D22E99998D9875A5110C01C5A2F6059E7 DCFD35E0BF8CA7344752DE8B6FB21E8933C60243 F3A04C595DB5B6A5F1ECA43E3B7BBB100D811BBE\
+        \ F7DA48BB64BCB84ECBA7EE6935CD23C10D498E23"
+      - "TOMCAT_MAJOR=8"
+      - "TOMCAT_VERSION=8.5.97"
+      - "TOMCAT_SHA512=344ea91c95677fdc243bc58a1f8ab745117a80c0a458ae2e26ebc4f968e06c4bfffaf9a4aae52de3d72b945b05b6e03b7cfae98596c222cbe7d394d52363da86"
+
+    hostname: "aebcc87ace49"
+
+    image: "guacamole/guacamole"
+
+    ipc: "private"
+
+    labels:
+      desktop.docker.io/wsl-distro: "Debian"
+      org.opencontainers.image.ref.name: "ubuntu"
+      org.opencontainers.image.version: "22.04"
+
+    links:
+      - "/guacd:/guacamole/guacd"
+
+    logging:
+      driver: "json-file"
+      options: {}
+
+    mac_address: "02:42:ac:11:00:02"
+
+    network_mode: "bridge"
+
+    ports:
+      - "8088:8080/tcp"
+
+    restart: "always"
+
+    user: "guacamole"
+
+    working_dir: "/opt/guacamole"
+
+  guacd:
+    command:
+      - "/bin/sh"
+      - "-c"
+      - "/opt/guacamole/sbin/guacd -b 0.0.0.0 -L $GUACD_LOG_LEVEL -f"
+    container_name: "guacd"
+    environment:
+      - "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+      - "LC_ALL=C.UTF-8"
+      - "LD_LIBRARY_PATH=/opt/guacamole/lib"
+      - "GUACD_LOG_LEVEL=info"
+    hostname: "0060cdc2f8a8"
+    image: "guacamole/guacd"
+    ipc: "private"
+    labels:
+      desktop.docker.io/wsl-distro: "Debian"
+    logging:
+      driver: "json-file"
+      options: {}
+    mac_address: "02:42:ac:11:00:05"
+    network_mode: "bridge"
+    ports:
+      - "4822:4822/tcp"
+    restart: "always"
+    user: "guacd"
+
+  mail2most:
+    command:
+      - "./mail2most"
+      - "-c"
+      - "/mail2most/conf/mail2most.conf"
+    container_name: "mail2most"
+    environment:
+      - "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+    hostname: "dadaf025d9ba"
+    image: "virtomize/mail2most:latest"
+    ipc: "private"
+    labels:
+      desktop.docker.io/wsl-distro: "Debian"
+    logging:
+      driver: "json-file"
+      options: {}
+    mac_address: "02:42:ac:11:00:08"
+    network_mode: "bridge"
+    restart: "always"
+    volumes:
+      - "/home/leo/mail2most.conf:/mail2most/conf/mail2most.conf"
+      - "27770d1006a14960027a378d16b31f01502296e81cbbad990ef3f3431cbd5d55:/mail2most/conf"
+    working_dir: "/mail2most"
+
+  nginx:
+    command:
+      - "nginx"
+      - "-g"
+      - "daemon off;"
+    container_name: "nginx"
+    entrypoint:
+      - "/docker-entrypoint.sh"
+    environment:
+      - "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+      - "NGINX_VERSION=1.25.3"
+      - "NJS_VERSION=0.8.2"
+      - "PKG_RELEASE=1~bookworm"
+    hostname: "b0b59ebdda70"
+    image: "nginx"
+    ipc: "private"
+    labels:
+      desktop.docker.io/wsl-distro: "Debian"
+      maintainer: "NGINX Docker Maintainers <docker-maint@nginx.com>"
+    logging:
+      driver: "json-file"
+      options: {}
+    mac_address: "02:42:ac:11:00:06"
+    network_mode: "bridge"
+    ports:
+      - "443:443/tcp"
+      - "5698:5432/tcp"
+      - "5680:5680/tcp"
+      - "80:80/tcp"
+    restart: "always"
+    volumes:
+      - "/home/leo/nginx:/etc/nginx:ro"
+
+  odoo:
+    command:
+      - "odoo"
+    container_name: "odoo"
+    entrypoint:
+      - "/entrypoint.sh"
+    environment:
+      - "HOST=10.10.0.3"
+      - "PORT=5432"
+      - "USER=odoo"
+      - "PASSWORD=123"
+      - "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+      - "LANG=en_US.UTF-8"
+      - "ODOO_VERSION=17.0"
+      - "ODOO_RC=/etc/odoo/odoo.conf"
+    hostname: "032fc10fc1f7"
+    image: "odoo"
+    ipc: "private"
+    labels:
+      desktop.docker.io/wsl-distro: "Debian"
+      org.opencontainers.image.ref.name: "ubuntu"
+      org.opencontainers.image.version: "22.04"
+    logging:
+      driver: "json-file"
+      options: {}
+    mac_address: "02:42:ac:11:00:07"
+    network_mode: "bridge"
+    ports:
+      - "8069:8069/tcp"
+      - "8072:8072/tcp"
+    restart: "always"
+    tty: true
+    user: "odoo"
+    volumes:
+      - "48ca0392ede404b81fc62b5e66090b8230c8ca88988c72ddd831de0694b89f2e:/mnt/extra-addons"
+      - "odoo-data:/var/lib/odoo"
+
+  redmine-redmine-1:
+
+    command:
+      - "rails"
+      - "server"
+      - "-b"
+      - "0.0.0.0"
+
+    container_name: "redmine-redmine-1"
+
+    entrypoint:
+      - "/docker-entrypoint.sh"
+
+    environment:
+      - "REDMINE_DB_USERNAME=postgres"
+      - "REDMINE_DB_PORT=5432"
+      - "REDMINE_SECRET_KEY_BASE=sec"
+      - "REDMINE_DB_DATABASE=red"
+      - "REDMINE_DB_POSTGRES=10.10.0.3"
+      - "REDMINE_DB_PASSWORD=123"
+      - "PATH=/usr/local/bundle/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+      - "LANG=C.UTF-8"
+      - "RUBY_MAJOR=3.1"
+      - "RUBY_VERSION=3.1.4"
+      - "RUBY_DOWNLOAD_SHA256=1b6d6010e76036c937b9671f4752f065aeca800a6c664f71f6c9a699453af94f"
+      - "GEM_HOME=/usr/local/bundle"
+      - "BUNDLE_SILENCE_ROOT_WARNING=1"
+      - "BUNDLE_APP_CONFIG=/usr/local/bundle"
+      - "RAILS_ENV=production"
+      - "HOME=/home/redmine"
+      - "REDMINE_VERSION=5.1.1"
+      - "REDMINE_DOWNLOAD_URL=https://www.redmine.org/releases/redmine-5.1.1.tar.gz"
+      - "REDMINE_DOWNLOAD_SHA256=edf3095746effd04ad5140681d618f5fa8d06be09c47b6f8b615dcad0b753e6e"
+
+    hostname: "fb01947147e9"
+
+    image: "redmine"
+
+    ipc: "private"
+
+    labels:
+      com.docker.compose.config-hash: "161fab12b260d74558e129f9251cf64fff2685f7fed98c546dc83682acb95c36"
+      com.docker.compose.container-number: "1"
+      com.docker.compose.depends_on: "redmine-themes:service_started:false"
+      com.docker.compose.image: "sha256:402ee5eeeaaa7d5aaff2c9203683b835c9b242e893c98b90ca8d117a507c249e"
+      com.docker.compose.oneoff: "False"
+      com.docker.compose.project: "redmine"
+      com.docker.compose.project.config_files: "/home/leo/redmine/docker-compose.yml"
+      com.docker.compose.project.working_dir: "/home/leo/redmine"
+      com.docker.compose.service: "redmine"
+      com.docker.compose.version: "2.23.0"
+      desktop.docker.io/wsl-distro: "Debian"
+
+    logging:
+      driver: "json-file"
+      options: {}
+
+    networks:
+      - "redmine_default"
+
+    ports:
+      - "83:3000/tcp"
+
+    restart: "always"
+
+    volumes:
+      - "10ca9c0eedaffdc9a6cbb80db84e87d68774ce2d1581ca45de69f00e78c44427:/usr/src/redmine/files"
+      - "redmine_redmine-themes:/usr/src/redmine/public/themes"
+
+    working_dir: "/usr/src/redmine"
+
+  root-base-1:
+
+    command:
+      - "irb"
+
+    container_name: "root-base-1"
+
+    environment:
+
+      - "ACTIVE_STORAGE_SERVICE=local"
+
+      - "DIRECT_UPLOADS_ENABLED="
+
+      - "REDIS_URL=redis://redis:6379"
+
+      - "SLACK_CLIENT_SECRET="
+
+      - "TWITTER_CONSUMER_SECRET="
+
+      - "AZURE_APP_SECRET="
+
+      - "TWITTER_ENVIRONMENT="
+
+      - "GOOGLE_OAUTH_CLIENT_SECRET="
+
+      - "AWS_SECRET_ACCESS_KEY="
+
+      - "ENABLE_PUSH_RELAY_SERVER=true"
+
+      - "POSTGRES_HOST=10.10.0.3"
+
+      - "LOG_LEVEL=info"
+
+      - "GOOGLE_OAUTH_CALLBACK_URL="
+
+      - "ANDROID_BUNDLE_ID=com.chatwoot.app"
+
+      - "POSTGRES_DATABASE=chat"
+
+      - "AZURE_APP_ID="
+
+      - "SMTP_USERNAME="
+
+      - "ENABLE_ACCOUNT_SIGNUP=false"
+
+      - "SMTP_DOMAIN=system4us.com"
+
+      - "AWS_ACCESS_KEY_ID="
+
+      - "RAILS_ENV=development"
+
+      - "RAILS_MAX_THREADS=5"
+
+      - "REDIS_PASSWORD="
+
+      - "FB_APP_ID="
+
+      - "SLACK_CLIENT_ID="
+
+      - "TWITTER_CONSUMER_KEY="
+
+      - "ASSET_CDN_HOST="
+
+      - "AWS_REGION="
+
+      - "SENTIMENT_FILE_PATH="
+
+      - "GOOGLE_OAUTH_CLIENT_ID="
+
+      - "TWITTER_APP_ID="
+
+      - "POSTGRES_USERNAME=postgres"
+
+      - "REDIS_SENTINEL_MASTER_NAME="
+
+      - "RAILS_INBOUND_EMAIL_PASSWORD="
+
+      - "STRIPE_SECRET_KEY="
+
+      - "STRIPE_WEBHOOK_SECRET="
+
+      - "MANDRILL_INGRESS_API_KEY="
+
+      - "SMTP_ENABLE_STARTTLS_AUTO=true"
+
+      - "RAILS_INBOUND_EMAIL_SERVICE="
+
+      - "IG_VERIFY_TOKEN="
+
+      - "SMTP_PASSWORD="
+
+      - "FRONTEND_URL=http://0.0.0.0:3000"
+
+      - "SMTP_AUTHENTICATION="
+
+      - "MAILGUN_INGRESS_SIGNING_KEY="
+
+      - "SMTP_PORT=1025"
+
+      - "FORCE_SSL=false"
+
+      - "IOS_APP_ID=L7YLMN4634.com.chatwoot.app"
+
+      - "POSTGRES_PASSWORD=123"
+
+      - "SMTP_ADDRESS="
+
+      - "SMTP_OPENSSL_VERIFY_MODE=peer"
+
+      - "ANDROID_SHA256_CERT_FINGERPRINT=AC:73:8E:DE:EB:56:EA:CC:10:87:02:A7:65:37:7B:38:D4:5D:D4:53:F8:3B:FB:D3:C6:28:64:1D:AA:08:1E:D8"
+
+      - "RAILS_LOG_TO_STDOUT=true"
+
+      - "MAILER_SENDER_EMAIL=Chatwoot <accounts@chatwoot.com>"
+
+      - "FB_VERIFY_TOKEN="
+
+      - "FB_APP_SECRET="
+
+      - "SECRET_KEY_BASE=replace_with_lengthy_secure_hex"
+
+      - "MAILER_INBOUND_EMAIL_DOMAIN="
+
+      - "REDIS_SENTINELS="
+
+      - "S3_BUCKET_NAME="
+
+      - "LOG_SIZE=500"
+
+      - "PATH=/usr/local/bundle/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+      - "LANG=C.UTF-8"
+
+      - "RUBY_MAJOR=3.2"
+
+      - "RUBY_VERSION=3.2.2"
+
+      - "RUBY_DOWNLOAD_SHA256=4b352d0f7ec384e332e3e44cdbfdcd5ff2d594af3c8296b5636c710975149e23"
+
+      - "GEM_HOME=/usr/local/bundle"
+
+      - "BUNDLE_SILENCE_ROOT_WARNING=1"
+
+      - "BUNDLE_APP_CONFIG=/usr/local/bundle"
+
+      - "BUNDLE_WITHOUT=development:test"
+
+      - "BUNDLER_VERSION=2.1.2"
+
+      - "EXECJS_RUNTIME=Disabled"
+
+      - "RAILS_SERVE_STATIC_FILES=true"
+
+      - "BUNDLE_FORCE_RUBY_PLATFORM=1"
+
+      - "BUNDLE_PATH=/gems"
+
+    expose:
+      - "3000/tcp"
+
+    hostname: "c5bf9a6fb6e8"
+
+    image: "chatwoot/chatwoot:latest"
+
+    ipc: "private"
+
+    labels:
+      com.docker.compose.config-hash: "e54fe24dc722b4d06e5ecaff2d65bbe393f12c18e7e68f791eda2274094b6205"
+      com.docker.compose.container-number: "1"
+      com.docker.compose.depends_on: ""
+      com.docker.compose.image: "sha256:e81df55bb6ebff790ea00363dbe7a91d3f58d032493bf30daf2618e0e1ff77e0"
+      com.docker.compose.oneoff: "False"
+      com.docker.compose.project: "root"
+      com.docker.compose.project.config_files: "/root/docker-compose.yaml"
+      com.docker.compose.project.working_dir: "/root"
+      com.docker.compose.service: "base"
+      com.docker.compose.version: "2.23.0"
+      desktop.docker.io/wsl-distro: "Debian"
+
+    logging:
+      driver: "json-file"
+      options: {}
+
+    networks:
+      - "root_default"
+
+    restart: "always"
+
+    volumes:
+      - "/data/storage:/app/storage"
+
+    working_dir: "/app"
+
+  root-rails-1:
+
+    command:
+      - "bundle"
+      - "exec"
+      - "rails"
+      - "s"
+      - "-p"
+      - "3000"
+      - "-b"
+      - "0.0.0.0"
+
+    container_name: "root-rails-1"
+
+    entrypoint:
+      - "docker/entrypoints/rails.sh"
+
+    environment:
+
+      - "RAILS_INBOUND_EMAIL_PASSWORD="
+
+      - "ANDROID_SHA256_CERT_FINGERPRINT=AC:73:8E:DE:EB:56:EA:CC:10:87:02:A7:65:37:7B:38:D4:5D:D4:53:F8:3B:FB:D3:C6:28:64:1D:AA:08:1E:D8"
+
+      - "DIRECT_UPLOADS_ENABLED="
+
+      - "POSTGRES_DATABASE=chat"
+
+      - "INSTALLATION_ENV=docker"
+
+      - "RAILS_LOG_TO_STDOUT=true"
+
+      - "ANDROID_BUNDLE_ID=com.chatwoot.app"
+
+      - "TWITTER_APP_ID="
+
+      - "ASSET_CDN_HOST="
+
+      - "TWITTER_ENVIRONMENT="
+
+      - "RAILS_ENV=production"
+
+      - "SECRET_KEY_BASE=replace_with_lengthy_secure_hex"
+
+      - "REDIS_SENTINELS="
+
+      - "REDIS_PASSWORD="
+
+      - "LOG_SIZE=500"
+
+      - "IG_VERIFY_TOKEN="
+
+      - "SMTP_AUTHENTICATION="
+
+      - "REDIS_SENTINEL_MASTER_NAME="
+
+      - "SLACK_CLIENT_ID="
+
+      - "GOOGLE_OAUTH_CLIENT_ID="
+
+      - "IOS_APP_ID=L7YLMN4634.com.chatwoot.app"
+
+      - "MANDRILL_INGRESS_API_KEY="
+
+      - "ACTIVE_STORAGE_SERVICE=local"
+
+      - "RAILS_INBOUND_EMAIL_SERVICE="
+
+      - "SMTP_PORT=1025"
+
+      - "POSTGRES_USERNAME=postgres"
+
+      - "POSTGRES_PASSWORD=123"
+
+      - "FB_APP_SECRET="
+
+      - "AZURE_APP_SECRET="
+
+      - "FRONTEND_URL=http://0.0.0.0:3000"
+
+      - "NODE_ENV=production"
+
+      - "MAILER_SENDER_EMAIL=Chatwoot <accounts@chatwoot.com>"
+
+      - "SMTP_ENABLE_STARTTLS_AUTO=true"
+
+      - "STRIPE_SECRET_KEY="
+
+      - "AWS_REGION="
+
+      - "AWS_SECRET_ACCESS_KEY="
+
+      - "TWITTER_CONSUMER_SECRET="
+
+      - "ENABLE_ACCOUNT_SIGNUP=false"
+
+      - "FB_APP_ID="
+
+      - "SMTP_PASSWORD="
+
+      - "FB_VERIFY_TOKEN="
+
+      - "STRIPE_WEBHOOK_SECRET="
+
+      - "POSTGRES_HOST=10.10.0.3"
+
+      - "S3_BUCKET_NAME="
+
+      - "SENTIMENT_FILE_PATH="
+
+      - "GOOGLE_OAUTH_CALLBACK_URL="
+
+      - "MAILGUN_INGRESS_SIGNING_KEY="
+
+      - "GOOGLE_OAUTH_CLIENT_SECRET="
+
+      - "SMTP_OPENSSL_VERIFY_MODE=peer"
+
+      - "AWS_ACCESS_KEY_ID="
+
+      - "SMTP_ADDRESS="
+
+      - "SLACK_CLIENT_SECRET="
+
+      - "LOG_LEVEL=info"
+
+      - "SMTP_USERNAME="
+
+      - "ENABLE_PUSH_RELAY_SERVER=true"
+
+      - "SMTP_DOMAIN=system4us.com"
+
+      - "RAILS_MAX_THREADS=5"
+
+      - "AZURE_APP_ID="
+
+      - "MAILER_INBOUND_EMAIL_DOMAIN="
+
+      - "TWITTER_CONSUMER_KEY="
+
+      - "REDIS_URL=redis://redis:6379"
+
+      - "FORCE_SSL=false"
+
+      - "PATH=/usr/local/bundle/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+      - "LANG=C.UTF-8"
+
+      - "RUBY_MAJOR=3.2"
+
+      - "RUBY_VERSION=3.2.2"
+
+      - "RUBY_DOWNLOAD_SHA256=4b352d0f7ec384e332e3e44cdbfdcd5ff2d594af3c8296b5636c710975149e23"
+
+      - "GEM_HOME=/usr/local/bundle"
+
+      - "BUNDLE_SILENCE_ROOT_WARNING=1"
+
+      - "BUNDLE_APP_CONFIG=/usr/local/bundle"
+
+      - "BUNDLE_WITHOUT=development:test"
+
+      - "BUNDLER_VERSION=2.1.2"
+
+      - "EXECJS_RUNTIME=Disabled"
+
+      - "RAILS_SERVE_STATIC_FILES=true"
+
+      - "BUNDLE_FORCE_RUBY_PLATFORM=1"
+
+      - "BUNDLE_PATH=/gems"
+
+    hostname: "505ebbe49c2e"
+
+    image: "chatwoot/chatwoot:latest"
+
+    ipc: "private"
+
+    labels:
+      com.docker.compose.config-hash: "432b18b9e435a961804befb7f582e47bc76704b0b4f881a432e926c5e9fa495e"
+      com.docker.compose.container-number: "1"
+      com.docker.compose.depends_on: "redis:service_started:false"
+      com.docker.compose.image: "sha256:e81df55bb6ebff790ea00363dbe7a91d3f58d032493bf30daf2618e0e1ff77e0"
+      com.docker.compose.oneoff: "False"
+      com.docker.compose.project: "root"
+      com.docker.compose.project.config_files: "/root/docker-compose.yaml"
+      com.docker.compose.project.working_dir: "/root"
+      com.docker.compose.service: "rails"
+      com.docker.compose.version: "2.23.0"
+      desktop.docker.io/wsl-distro: "Debian"
+
+    logging:
+      driver: "json-file"
+      options: {}
+
+    networks:
+      - "root_default"
+
+    ports:
+      - "4444:3000/tcp"
+
+    restart: "always"
+
+    volumes:
+      - "/data/storage:/app/storage"
+
+    working_dir: "/app"
+
+  root-redis-1:
+
+    command:
+      - "sh"
+      - "-c"
+      - "redis-server --requirepass \"\""
+
+    container_name: "root-redis-1"
+
+    entrypoint:
+      - "docker-entrypoint.sh"
+
+    environment:
+
+      - "SMTP_AUTHENTICATION="
+
+      - "IG_VERIFY_TOKEN="
+
+      - "ANDROID_BUNDLE_ID=com.chatwoot.app"
+
+      - "SMTP_USERNAME="
+
+      - "AZURE_APP_ID="
+
+      - "ENABLE_PUSH_RELAY_SERVER=true"
+
+      - "RAILS_ENV=development"
+
+      - "ENABLE_ACCOUNT_SIGNUP=false"
+
+      - "SLACK_CLIENT_SECRET="
+
+      - "MAILGUN_INGRESS_SIGNING_KEY="
+
+      - "STRIPE_SECRET_KEY="
+
+      - "FORCE_SSL=false"
+
+      - "FB_APP_ID="
+
+      - "REDIS_URL=redis://redis:6379"
+
+      - "SMTP_ADDRESS="
+
+      - "IOS_APP_ID=L7YLMN4634.com.chatwoot.app"
+
+      - "RAILS_INBOUND_EMAIL_SERVICE="
+
+      - "TWITTER_APP_ID="
+
+      - "REDIS_SENTINEL_MASTER_NAME="
+
+      - "POSTGRES_DATABASE=chat"
+
+      - "SMTP_PORT=1025"
+
+      - "MANDRILL_INGRESS_API_KEY="
+
+      - "SMTP_DOMAIN=system4us.com"
+
+      - "S3_BUCKET_NAME="
+
+      - "GOOGLE_OAUTH_CLIENT_SECRET="
+
+      - "SMTP_ENABLE_STARTTLS_AUTO=true"
+
+      - "POSTGRES_HOST=10.10.0.3"
+
+      - "SMTP_OPENSSL_VERIFY_MODE=peer"
+
+      - "GOOGLE_OAUTH_CALLBACK_URL="
+
+      - "RAILS_INBOUND_EMAIL_PASSWORD="
+
+      - "FB_APP_SECRET="
+
+      - "FB_VERIFY_TOKEN="
+
+      - "ANDROID_SHA256_CERT_FINGERPRINT=AC:73:8E:DE:EB:56:EA:CC:10:87:02:A7:65:37:7B:38:D4:5D:D4:53:F8:3B:FB:D3:C6:28:64:1D:AA:08:1E:D8"
+
+      - "DIRECT_UPLOADS_ENABLED="
+
+      - "STRIPE_WEBHOOK_SECRET="
+
+      - "LOG_SIZE=500"
+
+      - "POSTGRES_USERNAME=postgres"
+
+      - "TWITTER_ENVIRONMENT="
+
+      - "TWITTER_CONSUMER_SECRET="
+
+      - "GOOGLE_OAUTH_CLIENT_ID="
+
+      - "AWS_REGION="
+
+      - "ACTIVE_STORAGE_SERVICE=local"
+
+      - "SECRET_KEY_BASE=replace_with_lengthy_secure_hex"
+
+      - "MAILER_INBOUND_EMAIL_DOMAIN="
+
+      - "POSTGRES_PASSWORD=123"
+
+      - "MAILER_SENDER_EMAIL=Chatwoot <accounts@chatwoot.com>"
+
+      - "SLACK_CLIENT_ID="
+
+      - "AZURE_APP_SECRET="
+
+      - "RAILS_MAX_THREADS=5"
+
+      - "TWITTER_CONSUMER_KEY="
+
+      - "SENTIMENT_FILE_PATH="
+
+      - "AWS_ACCESS_KEY_ID="
+
+      - "FRONTEND_URL=http://0.0.0.0:3000"
+
+      - "SMTP_PASSWORD="
+
+      - "ASSET_CDN_HOST="
+
+      - "REDIS_SENTINELS="
+
+      - "RAILS_LOG_TO_STDOUT=true"
+
+      - "REDIS_PASSWORD="
+
+      - "LOG_LEVEL=info"
+
+      - "AWS_SECRET_ACCESS_KEY="
+
+      - "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+      - "GOSU_VERSION=1.17"
+
+      - "REDIS_VERSION=7.2.3"
+
+      - "REDIS_DOWNLOAD_URL=http://download.redis.io/releases/redis-7.2.3.tar.gz"
+
+      - "REDIS_DOWNLOAD_SHA=3e2b196d6eb4ddb9e743088bfc2915ccbb42d40f5a8a3edd8cb69c716ec34be7"
+
+    hostname: "f8a1193ba2be"
+
+    image: "redis:alpine"
+
+    ipc: "private"
+
+    labels:
+      com.docker.compose.config-hash: "534c2a120896258f1ef21a22d896d00004d4abefd7ebe6478086941b9ceb56ad"
+      com.docker.compose.container-number: "1"
+      com.docker.compose.depends_on: ""
+      com.docker.compose.image: "sha256:d2d4688fcebeb127fbc1e00693c3b4165ba8a02bf1e0347dd7d9ba38f6199afe"
+      com.docker.compose.oneoff: "False"
+      com.docker.compose.project: "root"
+      com.docker.compose.project.config_files: "/root/docker-compose.yaml"
+      com.docker.compose.project.working_dir: "/root"
+      com.docker.compose.service: "redis"
+      com.docker.compose.version: "2.23.0"
+      desktop.docker.io/wsl-distro: "Debian"
+
+    logging:
+      driver: "json-file"
+      options: {}
+
+    networks:
+      - "root_default"
+
+    ports:
+      - "6379:6379/tcp"
+
+    restart: "always"
+
+    volumes:
+      - "/data/redis:/data"
+
+    working_dir: "/data"
+
+  root-sidekiq-1:
+
+    command:
+      - "bundle"
+      - "exec"
+      - "sidekiq"
+      - "-C"
+      - "config/sidekiq.yml"
+
+    container_name: "root-sidekiq-1"
+
+    environment:
+
+      - "SMTP_AUTHENTICATION="
+
+      - "REDIS_SENTINEL_MASTER_NAME="
+
+      - "GOOGLE_OAUTH_CLIENT_SECRET="
+
+      - "GOOGLE_OAUTH_CALLBACK_URL="
+
+      - "MANDRILL_INGRESS_API_KEY="
+
+      - "RAILS_LOG_TO_STDOUT=true"
+
+      - "MAILER_SENDER_EMAIL=Chatwoot <accounts@chatwoot.com>"
+
+      - "REDIS_URL=redis://redis:6379"
+
+      - "REDIS_SENTINELS="
+
+      - "FORCE_SSL=false"
+
+      - "RAILS_MAX_THREADS=5"
+
+      - "SENTIMENT_FILE_PATH="
+
+      - "TWITTER_ENVIRONMENT="
+
+      - "SLACK_CLIENT_ID="
+
+      - "RAILS_ENV=production"
+
+      - "AZURE_APP_ID="
+
+      - "AWS_ACCESS_KEY_ID="
+
+      - "REDIS_PASSWORD="
+
+      - "SMTP_PASSWORD="
+
+      - "SMTP_DOMAIN=system4us.com"
+
+      - "LOG_LEVEL=info"
+
+      - "IOS_APP_ID=L7YLMN4634.com.chatwoot.app"
+
+      - "POSTGRES_HOST=10.10.0.3"
+
+      - "ASSET_CDN_HOST="
+
+      - "FB_VERIFY_TOKEN="
+
+      - "ACTIVE_STORAGE_SERVICE=local"
+
+      - "IG_VERIFY_TOKEN="
+
+      - "FB_APP_SECRET="
+
+      - "LOG_SIZE=500"
+
+      - "MAILGUN_INGRESS_SIGNING_KEY="
+
+      - "ANDROID_SHA256_CERT_FINGERPRINT=AC:73:8E:DE:EB:56:EA:CC:10:87:02:A7:65:37:7B:38:D4:5D:D4:53:F8:3B:FB:D3:C6:28:64:1D:AA:08:1E:D8"
+
+      - "MAILER_INBOUND_EMAIL_DOMAIN="
+
+      - "GOOGLE_OAUTH_CLIENT_ID="
+
+      - "RAILS_INBOUND_EMAIL_SERVICE="
+
+      - "ENABLE_PUSH_RELAY_SERVER=true"
+
+      - "ANDROID_BUNDLE_ID=com.chatwoot.app"
+
+      - "SMTP_ADDRESS="
+
+      - "AWS_REGION="
+
+      - "STRIPE_SECRET_KEY="
+
+      - "FRONTEND_URL=http://0.0.0.0:3000"
+
+      - "SMTP_USERNAME="
+
+      - "AWS_SECRET_ACCESS_KEY="
+
+      - "RAILS_INBOUND_EMAIL_PASSWORD="
+
+      - "S3_BUCKET_NAME="
+
+      - "SLACK_CLIENT_SECRET="
+
+      - "INSTALLATION_ENV=docker"
+
+      - "SMTP_ENABLE_STARTTLS_AUTO=true"
+
+      - "NODE_ENV=production"
+
+      - "FB_APP_ID="
+
+      - "ENABLE_ACCOUNT_SIGNUP=false"
+
+      - "SECRET_KEY_BASE=replace_with_lengthy_secure_hex"
+
+      - "SMTP_PORT=1025"
+
+      - "POSTGRES_PASSWORD=123"
+
+      - "TWITTER_APP_ID="
+
+      - "DIRECT_UPLOADS_ENABLED="
+
+      - "POSTGRES_USERNAME=postgres"
+
+      - "TWITTER_CONSUMER_SECRET="
+
+      - "POSTGRES_DATABASE=chat"
+
+      - "SMTP_OPENSSL_VERIFY_MODE=peer"
+
+      - "STRIPE_WEBHOOK_SECRET="
+
+      - "TWITTER_CONSUMER_KEY="
+
+      - "AZURE_APP_SECRET="
+
+      - "PATH=/usr/local/bundle/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+      - "LANG=C.UTF-8"
+
+      - "RUBY_MAJOR=3.2"
+
+      - "RUBY_VERSION=3.2.2"
+
+      - "RUBY_DOWNLOAD_SHA256=4b352d0f7ec384e332e3e44cdbfdcd5ff2d594af3c8296b5636c710975149e23"
+
+      - "GEM_HOME=/usr/local/bundle"
+
+      - "BUNDLE_SILENCE_ROOT_WARNING=1"
+
+      - "BUNDLE_APP_CONFIG=/usr/local/bundle"
+
+      - "BUNDLE_WITHOUT=development:test"
+
+      - "BUNDLER_VERSION=2.1.2"
+
+      - "EXECJS_RUNTIME=Disabled"
+
+      - "RAILS_SERVE_STATIC_FILES=true"
+
+      - "BUNDLE_FORCE_RUBY_PLATFORM=1"
+
+      - "BUNDLE_PATH=/gems"
+
+    expose:
+      - "3000/tcp"
+
+    hostname: "18b7613ae22d"
+
+    image: "chatwoot/chatwoot:latest"
+
+    ipc: "private"
+
+    labels:
+      com.docker.compose.config-hash: "7c4e19e5d671f5c646f246ff4e8dae038ec5f81084cdf5d7d62b17bc4b3bd6e7"
+      com.docker.compose.container-number: "1"
+      com.docker.compose.depends_on: "redis:service_started:false"
+      com.docker.compose.image: "sha256:e81df55bb6ebff790ea00363dbe7a91d3f58d032493bf30daf2618e0e1ff77e0"
+      com.docker.compose.oneoff: "False"
+      com.docker.compose.project: "root"
+      com.docker.compose.project.config_files: "/root/docker-compose.yaml"
+      com.docker.compose.project.working_dir: "/root"
+      com.docker.compose.service: "sidekiq"
+      com.docker.compose.version: "2.23.0"
+      desktop.docker.io/wsl-distro: "Debian"
+
+    logging:
+      driver: "json-file"
+      options: {}
+
+    networks:
+      - "root_default"
+
+    volumes:
+      - "/data/storage:/app/storage"
+
+    working_dir: "/app"
+
+  vaultwarden:
+    command:
+      - "/start.sh"
+    container_name: "vaultwarden"
+    environment:
+      - "SMTP_HOST=smtp.office365.com"
+      - "SMTP_FROM=leandrofusco@outlook.com.ar"
+      - "SMTP_PORT=587"
+      - "SMTP_SECURITY=starttls"
+      - "SMTP_USERNAME=leandrofusco@outlook.com.ar"
+      - "SMTP_PASSWORD=gwnfpmlvrmgtqkot"
+      - "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+      - "ROCKET_PROFILE=release"
+      - "ROCKET_ADDRESS=0.0.0.0"
+      - "ROCKET_PORT=80"
+      - "DEBIAN_FRONTEND=noninteractive"
+    hostname: "ad9cf2d7e357"
+    image: "vaultwarden/server:latest"
+    ipc: "private"
+    labels:
+      desktop.docker.io/wsl-distro: "Debian"
+      org.opencontainers.image.created: "2023-11-19T22:54:18+00:00"
+      org.opencontainers.image.description: "Unofficial Bitwarden compatible server written in Rust -\
+        \ 1.30.1"
+      org.opencontainers.image.documentation: "https://github.com/dani-garcia/vaultwarden/wiki"
+      org.opencontainers.image.licenses: "AGPL-3.0-only"
+      org.opencontainers.image.revision: "48836501bf348386d9bb1378fb56db33c19d3732"
+      org.opencontainers.image.source: "https://github.com/dani-garcia/vaultwarden"
+      org.opencontainers.image.url: "https://github.com/dani-garcia/vaultwarden"
+      org.opencontainers.image.version: "1.30.1"
+    logging:
+      driver: "json-file"
+      options: {}
+    mac_address: "02:42:ac:11:00:03"
+    network_mode: "bridge"
+    ports:
+      - "89:80/tcp"
+    restart: "always"
+    volumes:
+      - "/run/desktop/mnt/host/wsl/docker-desktop-bind-mounts/Debian/c0943fc58f9eaf075c56b1dfa711eb064d2ab8e96accd0a424444f1dd4423b1d:/data"
+    working_dir: "/"
+
+  wordpress:
+    command:
+      - "apache2-foreground"
+    container_name: "wordpress"
+    entrypoint:
+      - "docker-entrypoint.sh"
+    environment:
+      - "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+      - "PHPIZE_DEPS=autoconf \t\tdpkg-dev \t\tfile \t\tg++ \t\tgcc \t\tlibc-dev \t\tmake \t\tpkg-config\
+        \ \t\tre2c"
+      - "PHP_INI_DIR=/usr/local/etc/php"
+      - "APACHE_CONFDIR=/etc/apache2"
+      - "APACHE_ENVVARS=/etc/apache2/envvars"
+      - "PHP_CFLAGS=-fstack-protector-strong -fpic -fpie -O2 -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64"
+      - "PHP_CPPFLAGS=-fstack-protector-strong -fpic -fpie -O2 -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64"
+      - "PHP_LDFLAGS=-Wl,-O1 -pie"
+      - "GPG_KEYS=39B641343D8C104B2B146DC3F9C39DC0B9698544 E60913E4DF209907D8E30D96659A97C9CF2A795A 1198C0117593497A5EC5C199286AF1F9897469DC"
+      - "PHP_VERSION=8.2.13"
+      - "PHP_URL=https://www.php.net/distributions/php-8.2.13.tar.xz"
+      - "PHP_ASC_URL=https://www.php.net/distributions/php-8.2.13.tar.xz.asc"
+      - "PHP_SHA256=2629bba10117bf78912068a230c68a8fd09b7740267bd8ebd3cfce91515d454b"
+    hostname: "3c2e3a69a8ce"
+    image: "wordpress"
+    ipc: "private"
+    labels:
+      desktop.docker.io/wsl-distro: "Debian"
+    logging:
+      driver: "json-file"
+      options: {}
+    mac_address: "02:42:ac:11:00:04"
+    network_mode: "bridge"
+    ports:
+      - "865:80/tcp"
+    restart: "always"
+    volumes:
+      - "e88f509dfc163cd0f0a6b7be1a46283b759d382822a7024e375de6d67f0c9a2e:/var/www/html"
+    working_dir: "/var/www/html"
+
+version: "3.6"
+
+volumes:
+  10ca9c0eedaffdc9a6cbb80db84e87d68774ce2d1581ca45de69f00e78c44427:
+    external: true
+  27770d1006a14960027a378d16b31f01502296e81cbbad990ef3f3431cbd5d55:
+    external: true
+  48ca0392ede404b81fc62b5e66090b8230c8ca88988c72ddd831de0694b89f2e:
+    external: true
+  e88f509dfc163cd0f0a6b7be1a46283b759d382822a7024e375de6d67f0c9a2e:
+    external: true
+  odoo-data:
+    external: true
+  redmine_redmine-themes:
+    external: true
