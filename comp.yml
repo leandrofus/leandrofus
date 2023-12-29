@@ -11,7 +11,7 @@ networks:
   root_default:
     external: true
     name: "root_default"
-
+ 
 services:
 
   acondi:
