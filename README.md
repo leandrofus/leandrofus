@@ -1,53 +1,25 @@
-# Leandro Fusco | Software Engineering & DevOps
+# Leandro Fusco
 
-Bienvenido a mi perfil y repositorio de mi sitio personal / portafolio profesional en GitHub Pages: [leandrofus.github.io/leandrofus](https://leandrofus.github.io/leandrofus/).
+Software developer and infrastructure engineer based in Argentina. I build custom software with Go and Docker: I plan, build, deliver and maintain it.
 
-Especialista en **Go (Golang)**, **Docker**, **Linux** y arquitecturas backend resilientes.
+[Website](https://leandrofus.github.io/leandrofus/en/) · [Español](https://leandrofus.github.io/leandrofus/) · leandrofusdev@gmail.com
 
----
+## Delivered work
 
-## 🛠️ Tecnologías Principales
+- **2026 · Sagpic Gestión:** multi-company SaaS ERP with point of sale and electronic fiscal invoicing.
+- **2025 · Salamandr:** self-hosted omnichannel helpdesk that brings email, chat, WhatsApp and Telegram into one inbox.
+- **2024 · Hipotecatech:** fintech platform to originate and simulate mortgage loans.
 
-- **Lenguajes & Backend**: Go, TypeScript, Node.js, Python, Bash
-- **DevOps & Cloud**: Docker & Docker Compose, Linux Hardening, CI/CD (GitHub Actions), PAM
-- **Bases de Datos & Networking**: PostgreSQL, MySQL, Redis, Cloudflare, Nginx, Syslog
-- **Arquitectura**: Clean Architecture, Microservicios, CLI / TUI tools nativos, Observabilidad
+## Own projects
 
----
+- [ducktainer](https://github.com/leandrofus/ducktainer): Docker administration in a single binary, with a web UI and PAM authentication.
+- [duckJump](https://github.com/leandrofus/duckJump): web access bastion for SSH, RDP and VNC servers, with session recording.
+- [ducktpl](https://github.com/leandrofus/ducktpl): configuration generator for container deployments.
 
-## 🚀 Proyectos Destacados
+## Stack
 
-- **[Salamandr](https://github.com/system4us/salamandr)** - El popular sistema de gestión de tickets y helpdesk omnicanal self-hosted. Alternativa open-source a Zendesk que unifica Email, Live Chat, WhatsApp, Telegram y Meta con IA local vía Ollama y plugins Wasm. ([Sitio & Docs](https://system4us.github.io/salamandr-website/))
-- **Hipotecatech** - Plataforma FinTech para originación, scoring y simulación financiera de créditos hipotecarios y generación documental automatizada.
-- **Sagpic Gestión** - Plataforma SaaS ERP multitenant con Go, PostgreSQL (RLS), Redis, POS fiscal, sucursales y app móvil de preventa en Tauri.
-- **[duckJump](https://github.com/leandrofus/duckJump)** - Bastión de acceso web clientless (SSH, RDP, VNC) con PAM, bóveda de credenciales cifrada AES-256-GCM, grabación de sesiones y auditoría criptográfica.
-- **[ducktainer](https://github.com/leandrofus/ducktainer)** - Gestión completa de Docker en un único binario Go: Web UI, terminales interactivas, compose stacks y autenticación PAM. ([Demo](https://leandrofus.github.io/ducktainer/))
-- **duckops** - Plataforma self-hosted para automatización y gobernanza de infraestructura privada.
-- **[ducktpl](https://github.com/leandrofus/ducktpl)** - Motor de plantillas y generador de configuración para despliegues de contenedores.
+Go, TypeScript, Node.js, Bash · Docker, Compose, Linux, GitHub Actions · PostgreSQL, MySQL, Redis · Nginx, Cloudflare
 
 ---
 
-## 🌐 Sitio Web & Portafolio (Markdown-Driven)
-
-Este repositorio contiene el código fuente del sitio generado con **Astro 5 + Tailwind CSS**:
-
-- **Contenido 100% editable en Markdown**: Todo el contenido textual, servicios y proyectos se encuentra en `src/content/` (`es` y `en`).
-- **Soporte Bilingüe (i18n)**: Español (`/`) e Inglés (`/en/`).
-- **Deploy Automático**: Integrado con GitHub Actions en `.github/workflows/deploy.yml` para desplegar en GitHub Pages.
-
-### Desarrollo Local
-
-```bash
-# Instalar dependencias
-bun install # o npm install
-
-# Iniciar servidor de desarrollo
-bun run dev
-
-# Compilar para producción
-bun run build
-```
-
----
-
-📬 **Contacto**: [leandrofusdev@gmail.com](mailto:leandrofusdev@gmail.com) | [GitHub](https://github.com/leandrofus)
+The source of the website is in this repository. How to work on it: [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md).
