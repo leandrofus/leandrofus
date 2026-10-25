@@ -1,0 +1,52 @@
+---
+import type { Lang } from '@/utils/i18n';
+import { useTranslations } from '@/utils/i18n';
+import type { CollectionEntry } from 'astro:content';
+import { render } from 'astro:content';
+
+interface Props {
+  contact: CollectionEntry<'site'>;
+  lang: Lang;
+}
+
+const { contact, lang } = Astro.props;
+const t = useTranslations(lang);
+const { Content } = await render(contact);
+const { title, subtitle } = contact.data;
+const sectionId = lang === 'es' ? 'contacto' : 'contact';
+const email = 'leandrofusdev@gmail.com';
+---
+
+<section id={sectionId} class="section">
+  <div class="chamfer border-2 border-pink bg-panel p-8 sm:p-14" style="box-shadow: 8px 8px 0 #00E5FF">
+    <h2 class="glitch text-3xl sm:text-5xl font-bold uppercase leading-tight max-w-3xl" style="text-wrap: balance">{title}</h2>
+    <p class="mt-5 text-lg text-text max-w-2xl">{subtitle}</p>
+    <div class="md mt-3 max-w-2xl"><Content /></div>
+
+    <a href={`mailto:${email}?subject=${encodeURIComponent(lang === 'es' ? 'Contacto desde Portfolio' : 'Contact from Portfolio')}`}
+       class="mt-8 block font-mono text-xl sm:text-3xl text-sun hover:text-pink break-all">{email}</a>
+
+    <div class="mt-8 flex flex-wrap gap-4">
+      <a href={`mailto:${email}`} class="btn btn-primary">{t('contact.email_btn')}</a>
+      <button type="button" id="copy-email-btn" data-email={email} class="btn btn-ghost">
+        <span id="copy-text">{t('contact.copy_email')}</span>
+      </button>
+      <a href="https://github.com/leandrofus" target="_blank" rel="noopener noreferrer" class="btn btn-ghost">GitHub</a>
+    </div>
+    <p id="copy-toast" role="status" class="hidden mt-4 font-mono text-sm text-[#39FF88]">{t('contact.email_copied')}</p>
+  </div>
+</section>
+
+<script>
+  const btn = document.getElementById('copy-email-btn');
+  const toast = document.getElementById('copy-toast');
+  btn?.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(btn.getAttribute('data-email') || '');
+      toast?.classList.remove('hidden');
+      setTimeout(() => toast?.classList.add('hidden'), 3000);
+    } catch (e) {
+      console.error('Failed to copy', e);
+    }
+  });
+</script>

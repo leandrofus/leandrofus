@@ -1,0 +1,46 @@
+---
+import type { Lang } from '@/utils/i18n';
+import { useTranslations } from '@/utils/i18n';
+import type { CollectionEntry } from 'astro:content';
+import { render } from 'astro:content';
+
+interface Props {
+  services: CollectionEntry<'services'>[];
+  lang: Lang;
+}
+
+const { services, lang } = Astro.props;
+const t = useTranslations(lang);
+const sectionId = lang === 'es' ? 'servicios' : 'services';
+---
+
+<section id={sectionId} class="section">
+  <h2 class="section-title"><span class="text-pink">//</span> {t('services.title')}</h2>
+  <p class="section-lead">{t('services.subtitle')}</p>
+
+  <div class="mt-10 grid grid-cols-1 md:grid-cols-2 gap-8">
+    {services.map(async (service, i) => {
+      const { Content } = await render(service);
+      const accent = i % 2 === 0 ? '#FF2E97' : '#00E5FF';
+      return (
+        <article class="chamfer card p-7 flex flex-col" style={`border-color:${accent}`}>
+          <h3 class="text-2xl font-bold uppercase tracking-tight">{service.data.title}</h3>
+          <p class="mt-2 text-text">{service.data.description}</p>
+          <div class="md mt-4 text-sm"><Content /></div>
+
+          {service.data.deliverables && (
+            <ul class="mt-5 space-y-2 text-sm text-text border-t-2 border-grid pt-5">
+              {service.data.deliverables.map((item) => (
+                <li class="flex gap-3"><span class="text-sun font-mono font-bold">+</span><span>{item}</span></li>
+              ))}
+            </ul>
+          )}
+
+          <a href={lang === 'es' ? '#contacto' : '#contact'} class="mt-auto pt-6 text-sm font-bold uppercase tracking-wider text-cyan hover:text-pink">
+            {lang === 'es' ? 'Consultar este servicio' : 'Ask about this service'} &gt;
+          </a>
+        </article>
+      );
+    })}
+  </div>
+</section>

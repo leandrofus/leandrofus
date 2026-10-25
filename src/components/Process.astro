@@ -1,0 +1,30 @@
+---
+import type { Lang } from '@/utils/i18n';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  process: CollectionEntry<'process'>;
+  lang: Lang;
+}
+
+const { process } = Astro.props;
+const { title, subtitle, steps, note } = process.data;
+---
+
+<section class="section">
+  <h2 class="section-title"><span class="text-sun">//</span> {title}</h2>
+  {subtitle && <p class="section-lead">{subtitle}</p>}
+
+  <ol class="mt-10 grid grid-cols-1 md:grid-cols-5 gap-6 md:gap-0">
+    {steps.map((step, i) => (
+      <li class="relative md:pr-6 pl-12 md:pl-0 md:pt-14">
+        <span class="absolute left-0 top-0 w-9 h-9 flex items-center justify-center bg-void border-2 border-pink font-mono font-bold text-pink">{i + 1}</span>
+        {i < steps.length - 1 && <span class="hidden md:block absolute left-9 right-0 top-[18px] h-0.5 bg-grid" aria-hidden="true"></span>}
+        <h3 class="text-lg font-bold uppercase">{step.title}</h3>
+        <p class="mt-2 text-sm text-dim leading-relaxed">{step.text}</p>
+      </li>
+    ))}
+  </ol>
+
+  {note && <p class="mt-10 max-w-2xl border-l-4 border-sun pl-5 text-lg text-text">{note}</p>}
+</section>

@@ -1,0 +1,36 @@
+---
+import type { Lang } from '@/utils/i18n';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  skills: CollectionEntry<'skills'>;
+  lang: Lang;
+}
+
+const { skills } = Astro.props;
+const { title, subtitle, groups } = skills.data;
+---
+
+<section class="section">
+  <h2 class="section-title"><span class="text-sun">//</span> {title}</h2>
+  {subtitle && <p class="section-lead">{subtitle}</p>}
+
+  <div class="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+    {groups.map((group) => (
+      <div>
+        <div class="lg:min-h-[8.5rem]">
+          <h3 class="text-lg font-bold uppercase text-pink">{group.title}</h3>
+          <p class="mt-1 text-sm text-dim">{group.description}</p>
+        </div>
+        <ul class="mt-4 border-t-2 border-grid">
+          {group.items.map((item) => (
+            <li class="flex items-baseline justify-between gap-3 py-2 border-b border-grid">
+              <span class={`font-mono text-sm ${item.highlight ? 'text-cyan' : 'text-text'}`}>{item.name}</span>
+              <span class="text-xs text-dim">{item.level}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))}
+  </div>
+</section>

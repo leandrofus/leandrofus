@@ -1,0 +1,84 @@
+---
+import { useTranslations, type Lang } from '@/utils/i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const isSpanish = lang === 'es';
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
+const targetLangUrl = isSpanish ? `${baseUrl}/en/` : (baseUrl || '/');
+const homeUrl = isSpanish ? (baseUrl || '/') : `${baseUrl}/en/`;
+
+const navItems = [
+  { href: isSpanish ? '#servicios' : '#services', label: t('nav.services') },
+  { href: isSpanish ? '#proyectos' : '#projects', label: t('nav.projects') },
+  { href: isSpanish ? '#sobre-mi' : '#about', label: t('nav.about') },
+  { href: isSpanish ? '#contacto' : '#contact', label: t('nav.contact') },
+];
+---
+
+<header class="sticky top-0 z-50 bg-void border-b-2 border-grid">
+  <div class="max-w-6xl mx-auto px-5 sm:px-8 flex items-center justify-between h-16">
+    <a href={homeUrl} class="font-bold uppercase tracking-widest text-text hover:text-pink transition-colors">
+      Leandro<span class="text-pink">_</span>Fusco
+    </a>
+
+    <nav class="hidden md:flex items-center gap-8">
+      {navItems.map((item) => (
+        <a href={item.href} class="text-sm uppercase tracking-wider text-dim hover:text-cyan transition-colors">{item.label}</a>
+      ))}
+    </nav>
+
+    <div class="flex items-center gap-3">
+      <a
+        href={targetLangUrl}
+        title={isSpanish ? 'Switch to English' : 'Cambiar a Español'}
+        class="px-2.5 py-1.5 text-xs font-mono border border-grid hover:border-cyan transition-colors"
+      >
+        <span class={isSpanish ? 'text-cyan font-bold' : 'text-dim'}>ES</span><span class="text-grid">/</span><span class={!isSpanish ? 'text-cyan font-bold' : 'text-dim'}>EN</span>
+      </a>
+
+      <a href={isSpanish ? '#contacto' : '#contact'} class="btn btn-primary hidden sm:inline-flex !py-2">{t('nav.cta')}</a>
+
+      <button type="button" id="mobile-menu-btn" aria-label="Menu" class="md:hidden p-2 text-cyan">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path id="menu-icon-bars" stroke-linecap="square" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          <path id="menu-icon-close" class="hidden" stroke-linecap="square" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div id="mobile-menu" class="hidden md:hidden border-t-2 border-grid bg-void px-5 py-4 space-y-1">
+    {navItems.map((item) => (
+      <a href={item.href} class="block py-2 uppercase tracking-wider text-dim hover:text-cyan">{item.label}</a>
+    ))}
+    <a href={isSpanish ? '#contacto' : '#contact'} class="btn btn-primary w-full mt-3">{t('nav.cta')}</a>
+  </div>
+</header>
+
+<script>
+  const btn = document.getElementById('mobile-menu-btn');
+  const menu = document.getElementById('mobile-menu');
+  const bars = document.getElementById('menu-icon-bars');
+  const close = document.getElementById('menu-icon-close');
+
+  btn?.addEventListener('click', () => {
+    menu?.classList.toggle('hidden');
+    bars?.classList.toggle('hidden');
+    close?.classList.toggle('hidden');
+  });
+
+  // Close menu when clicking a link
+  menu?.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', () => {
+      menu.classList.add('hidden');
+      bars?.classList.remove('hidden');
+      close?.classList.add('hidden');
+    });
+  });
+</script>

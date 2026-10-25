@@ -1,0 +1,96 @@
+---
+import type { Lang } from '@/utils/i18n';
+import type { CollectionEntry } from 'astro:content';
+import { render } from 'astro:content';
+
+interface Props {
+  hero: CollectionEntry<'site'>;
+  lang: Lang;
+}
+
+const { hero, lang } = Astro.props;
+const { Content } = await render(hero);
+const { title, subtitle, badge, ctaPrimary, ctaSecondary, stats } = hero.data;
+
+const delivered = lang === 'es'
+  ? [
+      { year: 2026, name: 'sagpic', what: 'ERP SaaS con facturación fiscal' },
+      { year: 2025, name: 'salamandr', what: 'Helpdesk omnicanal' },
+      { year: 2024, name: 'hipotecatech', what: 'Plataforma fintech de créditos hipotecarios' },
+    ]
+  : [
+      { year: 2026, name: 'sagpic', what: 'SaaS ERP with fiscal invoicing' },
+      { year: 2025, name: 'salamandr', what: 'Omnichannel helpdesk' },
+      { year: 2024, name: 'hipotecatech', what: 'Mortgage lending fintech platform' },
+    ];
+---
+
+<section class="relative pt-12 pb-14 md:pt-16 md:pb-16">
+  <!-- Retro sun and grid floor -->
+  <div class="absolute inset-y-0 left-1/2 w-screen -translate-x-1/2 overflow-hidden pointer-events-none" aria-hidden="true">
+    <div class="sun absolute hidden lg:block right-[3%] bottom-[16%] w-[600px] h-[600px] opacity-90"></div>
+    <div class="absolute inset-x-0 bottom-0 h-[26%] bg-void"></div>
+    <div class="floor absolute -inset-x-[50%] bottom-0 h-[26%] opacity-70"></div>
+  </div>
+
+  <div class="relative grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+    <div class="lg:col-span-7">
+      {badge && (
+        <p class="inline-flex items-center gap-2 font-mono text-sm text-cyan">
+          <span class="w-2 h-2 bg-cyan animate-pulse"></span>{badge}
+        </p>
+      )}
+
+      <h1 class="glitch mt-5 text-4xl sm:text-6xl font-bold uppercase leading-[1.05] tracking-tight" style="text-wrap: balance">
+        {title}
+      </h1>
+
+      <p class="mt-6 text-xl text-text max-w-xl leading-relaxed">{subtitle}</p>
+
+      <div class="md mt-4 max-w-xl"><Content /></div>
+
+      <div class="mt-9 flex flex-wrap gap-4">
+        {ctaPrimary && <a href={ctaPrimary.href} class="btn btn-primary">{ctaPrimary.text}</a>}
+        {ctaSecondary && <a href={ctaSecondary.href} class="btn btn-ghost">{ctaSecondary.text}</a>}
+      </div>
+
+      {stats && (
+        <dl class="mt-14 grid grid-cols-3 gap-4 max-w-xl">
+          {stats.map((stat) => (
+            <div class="border-l-2 border-pink pl-3">
+              <dt class="text-2xl sm:text-3xl font-bold text-sun">{stat.value}</dt>
+              <dd class="text-xs sm:text-sm text-dim mt-1">{stat.label}</dd>
+            </div>
+          ))}
+        </dl>
+      )}
+    </div>
+
+    <!-- Terminal: delivered work -->
+    <div class="lg:col-span-5">
+      <div class="chamfer bg-panel border-2 border-cyan font-mono text-xs sm:text-sm" style="box-shadow: 8px 8px 0 #FF2E97">
+        <div class="px-4 py-2 border-b-2 border-cyan text-cyan text-xs">
+          leandro@portfolio:~/{lang === 'es' ? 'entregas' : 'delivered'}
+        </div>
+        <div class="p-5 space-y-4 leading-relaxed">
+          <p><span class="text-pink">$</span> ls -t</p>
+          <ul class="space-y-3">
+            {delivered.map((d) => (
+              <li class="flex gap-4">
+                <span class="text-sun font-bold">{d.year}</span>
+                <span>
+                  <span class="text-cyan font-bold">{d.name}</span><br />
+                  <span class="text-dim">{d.what}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+          <p>
+            <span class="text-pink">$</span> ./{lang === 'es' ? 'tu-proyecto' : 'your-project'}
+            <span class="caret inline-block w-2 h-4 bg-cyan align-middle"></span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

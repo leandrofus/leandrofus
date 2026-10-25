@@ -1,0 +1,30 @@
+---
+import type { Lang } from '@/utils/i18n';
+import type { CollectionEntry } from 'astro:content';
+import { render } from 'astro:content';
+
+interface Props {
+  about: CollectionEntry<'site'>;
+  lang: Lang;
+}
+
+const { about, lang } = Astro.props;
+const { Content } = await render(about);
+const { title, subtitle } = about.data;
+const sectionId = lang === 'es' ? 'sobre-mi' : 'about';
+---
+
+<section id={sectionId} class="section">
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+    <div class="lg:col-span-5">
+      <h2 class="section-title"><span class="text-pink">//</span> {title}</h2>
+      <p class="section-lead">{subtitle}</p>
+      <dl class="mt-8 font-mono text-sm space-y-2 text-dim">
+        <div class="flex gap-3"><dt class="text-cyan w-20">loc</dt><dd>{lang === 'es' ? 'Argentina / Remoto' : 'Argentina / Remote'}</dd></div>
+        <div class="flex gap-3"><dt class="text-cyan w-20">github</dt><dd>github.com/leandrofus</dd></div>
+        <div class="flex gap-3"><dt class="text-cyan w-20">stack</dt><dd>Go · Docker · Linux</dd></div>
+      </dl>
+    </div>
+    <div class="lg:col-span-7 md text-base"><Content /></div>
+  </div>
+</section>
